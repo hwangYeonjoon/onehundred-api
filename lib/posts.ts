@@ -9,7 +9,10 @@ export type Post = {
   createdAt: string;
 };
 
-const dataFile = process.env.DATA_FILE ?? path.join(process.cwd(), "data/posts.json");
+// 기본 저장 위치는 로컬 개발: repo/data/posts.json, Vercel 등 읽기 전용 환경: /tmp/posts.json
+const dataFile =
+  process.env.DATA_FILE ??
+  (process.env.VERCEL ? "/tmp/posts.json" : path.join(process.cwd(), "data/posts.json"));
 
 async function ensureFileExists() {
   try {

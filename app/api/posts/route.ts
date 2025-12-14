@@ -9,7 +9,14 @@ const corsHeaders = {
 
 function toApiPost(post: Post) {
   // Keep existing shape while providing legacy aliases used by some clients
-  return { ...post, content: post.body, date: post.createdAt };
+  const comments = Array.isArray(post.comments)
+    ? post.comments.map((comment) => ({
+        ...comment,
+        date: comment.createdAt,
+      }))
+    : [];
+
+  return { ...post, content: post.body, date: post.createdAt, comments };
 }
 
 export async function GET() {

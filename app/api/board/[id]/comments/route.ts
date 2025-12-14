@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { appendComment } from "../../../../../lib/posts";
 
 const corsHeaders = {
@@ -8,10 +8,11 @@ const corsHeaders = {
 };
 
 export async function POST(
-  request: Request,
-  { params }: { params: { id: string } },
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const payload = await request.json();
     const content =
       (payload.content as string | undefined)?.trim() ||
@@ -24,7 +25,7 @@ export async function POST(
       });
     }
 
-    const comment = await appendComment(params.id, content);
+    const comment = await appendComment(id, content);
 
     return NextResponse.json(
       { ...comment, date: comment.createdAt },
